@@ -1,0 +1,19 @@
+query get {
+  getUserById(id: 5) {
+    name
+    username
+    password
+    id
+    friends {
+      name
+      friends {
+        name
+      }
+    }
+  }
+  users {
+    friends {
+      id
+    }
+  }
+}

@@ -1,0 +1,14 @@
+query getall {
+  users {
+    name
+    username
+    password
+    id
+    friends {
+      id
+      friends {
+        id
+      }
+    }
+  }
+}
