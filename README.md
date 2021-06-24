@@ -1,2 +1,2 @@
-package friends.queries : Using dataloader
-package friends2.queries : Without dataloader
+<p> package friends.queries : Using dataloader <p>
+<p> package friends2.queries : Without dataloader </p>
