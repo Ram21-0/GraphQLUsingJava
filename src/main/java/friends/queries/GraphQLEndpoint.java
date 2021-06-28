@@ -7,6 +7,8 @@ import java.util.Map;
 @RestController
 public class GraphQLEndpoint {
 
+//    private GraphQLGenerator graphQLGenerator = GraphQLGenerator.getInstance();
+
     @GetMapping(value = "/hello")
     @ResponseBody
     public Map<String,Object> hello(@RequestBody String request) {
@@ -15,8 +17,11 @@ public class GraphQLEndpoint {
 
     }
 
-    @PostMapping(value = "/sampleRequest")
+    @PostMapping(value = "/endpoint")
     public Map<String,Object> function(@RequestBody Map<String,Object> request) {
-        return Map.of("hello","world");
+        String query = (String) request.get("query");
+        return GraphQLGenerator.execute(query);
+//        System.out.println("query");
+//        return Map.of("hello","world");
     }
 }
