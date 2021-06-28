@@ -3,8 +3,6 @@ package friends.queries.queries;
 import friends.queries.data.DataRepository;
 import friends.queries.dataloader.DataLoaderConfig;
 import friends.queries.model.User;
-import graphql.execution.instrumentation.nextgen.InstrumentationExecutionParameters;
-import graphql.execution.instrumentation.tracing.TracingInstrumentation;
 import io.leangen.graphql.annotations.GraphQLArgument;
 import io.leangen.graphql.annotations.GraphQLEnvironment;
 import io.leangen.graphql.annotations.GraphQLMutation;
@@ -12,14 +10,11 @@ import io.leangen.graphql.annotations.GraphQLQuery;
 import io.leangen.graphql.execution.ResolutionEnvironment;
 import io.leangen.graphql.spqr.spring.annotations.GraphQLApi;
 import org.dataloader.DataLoader;
-import org.dataloader.stats.Statistics;
-import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ExecutionException;
 
 @Service
 @GraphQLApi
@@ -71,7 +66,7 @@ public class UserQueryWithLoaders {
 
 
 //        loader.
-        return loader.loadMany(repository.getKeys());
+        return loader.loadMany(repository.getAllUserIds());
     }
 
     @GraphQLQuery(name = "getUserById")
@@ -84,13 +79,14 @@ public class UserQueryWithLoaders {
     @GraphQLMutation(name = "createUser")
     public User addUser(@GraphQLArgument(name = "id") int id, @GraphQLArgument(name = "name") String name,
                         @GraphQLArgument(name = "username") String username, @GraphQLArgument(name = "password") String password,
-                        @GraphQLArgument(name = "friends") Set<Integer> friends) {
-        return repository.add(new User(id,name,username,password,friends));
+                        @GraphQLArgument(name = "friends") Set<Integer> friends,
+                        @GraphQLArgument(name = "items") List<String> items) {
+        return repository.addUser(new User(id,name,username,password,friends,items));
     }
 
     @GraphQLMutation(name = "updateUser")
     public User update(@GraphQLArgument(name = "id") int id, @GraphQLArgument(name = "u") User u) {
-        return repository.update(id,u);
+        return repository.updateUser(id,u);
     }
 }
 

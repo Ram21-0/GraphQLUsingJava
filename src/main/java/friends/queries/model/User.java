@@ -2,12 +2,12 @@ package friends.queries.model;
 
 import io.leangen.graphql.annotations.GraphQLId;
 import io.leangen.graphql.annotations.GraphQLQuery;
-import lombok.Data;
+import lombok.AllArgsConstructor;
 
 import java.util.List;
-import java.util.Objects;
 import java.util.Set;
 
+@AllArgsConstructor
 public class User {
     @GraphQLId int id;
     String name;
@@ -24,16 +24,7 @@ public class User {
         this.friends = friends;
     }
 
-    public User(int id, String name, String username, String password, Set<Integer> friends,List<String> items) {
-        this.id = id;
-        this.name = name;
-        this.username = username;
-        this.password = password;
-        this.friends = friends;
-        this.items = items;
-    }
-
-//    public static User valueOf(Document doc) {
+    //    public static User valueOf(Document doc) {
 //        return new User(
 //                doc.get("_id").toString(),
 //                doc.getString("name"),
@@ -51,18 +42,18 @@ public class User {
 //    }
 
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        User user = (User) o;
-        return Objects.equals(name, user.name) && Objects.equals(username, user.username) && Objects.equals(password, user.password) && Objects.equals(friends, user.friends);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(name, username, password, friends);
-    }
+//    @Override
+//    public boolean equals(Object o) {
+//        if (this == o) return true;
+//        if (o == null || getClass() != o.getClass()) return false;
+//        User user = (User) o;
+//        return Objects.equals(name, user.name) && Objects.equals(username, user.username) && Objects.equals(password, user.password) && Objects.equals(friends, user.friends);
+//    }
+//
+//    @Override
+//    public int hashCode() {
+//        return Objects.hash(name, username, password, friends);
+//    }
 
 //    public void setId(int id) {
 //        this.id = id;
@@ -119,8 +110,8 @@ public class User {
                 '}';
     }
 
-    @GraphQLQuery(name = "items")
-    public List<String> getItems() {
+//    @GraphQLQuery(name = "items")
+    public List<String> itemList() {
         return items;
     }
 }

@@ -4,24 +4,17 @@ import com.google.common.io.Resources;
 
 import friends.queries.data.DataRepository;
 import friends.queries.dataloader.DataLoaderConfig;
+//import friends.queries.execution.ExecutionStrategy;
+import friends.queries.execution.ExecutionStrategy;
 import friends.queries.instrumentation.Instrumentation;
 import friends.queries.queries.FriendsQueryWithLoader;
+import friends.queries.queries.ItemQueryWithLoaders;
 import friends.queries.queries.UserQueryWithLoaders;
 import graphql.ExecutionInput;
 import graphql.ExecutionResult;
 import graphql.GraphQL;
-import graphql.analysis.MaxQueryComplexityInstrumentation;
-import graphql.analysis.MaxQueryDepthInstrumentation;
-import graphql.execution.AsyncExecutionStrategy;
-import graphql.execution.ExecutionStrategy;
-import graphql.execution.batched.BatchedExecutionStrategy;
-import graphql.execution.instrumentation.ChainedInstrumentation;
-import graphql.execution.instrumentation.tracing.TracingInstrumentation;
 import graphql.schema.GraphQLSchema;
-import graphql.schema.idl.SchemaPrinter;
 import io.leangen.graphql.GraphQLSchemaGenerator;
-import org.apache.logging.slf4j.SLF4JLogger;
-import org.apache.logging.slf4j.SLF4JLoggerContext;
 import org.dataloader.DataLoaderRegistry;
 //import org.slf4j.ILoggerFactory;
 //import org.slf4j.Logger;
@@ -30,20 +23,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 //import friends.queries.queries.FriendsQuery;
 //import friends.queries.queries.UserQuery;
 import org.springframework.http.MediaType;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
-import java.io.IOException;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
 import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ExecutionException;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @RestController
 public class Controller {
@@ -59,7 +47,7 @@ public class Controller {
     private static long endTime = System.nanoTime();
 
     @Autowired
-    public Controller(UserQueryWithLoaders userQuery, FriendsQueryWithLoader friendQuery) {
+    public Controller(UserQueryWithLoaders userQuery, FriendsQueryWithLoader friendQuery, ItemQueryWithLoaders itemQuery) {
 
 //        System.out.println(logger.isDebugEnabled());
         //Schema generated from query classes
@@ -69,10 +57,10 @@ public class Controller {
 //                .generate();
         GraphQLSchema schema = new GraphQLSchemaGenerator()
                 .withBasePackages("friends.queries")
-                .withOperationsFromSingletons(userQuery, friendQuery)
+                .withOperationsFromSingletons(userQuery, friendQuery, itemQuery)
                 .generate();
         graphQL = GraphQL.newGraphQL(schema)
-//                .queryExecutionStrategy(new AsyncExecutionStrategy())
+                .queryExecutionStrategy(new ExecutionStrategy())
 //                .instrumentation(new Instrumentation())
                 .build();
 
@@ -102,7 +90,7 @@ public class Controller {
         startTime = System.nanoTime();
 //        graphQL = GraphQL.newGraphQL(schema).build();
         graphQL = GraphQL.newGraphQL(schema)
-                .queryExecutionStrategy(new AsyncExecutionStrategy())
+                .queryExecutionStrategy(new ExecutionStrategy())
                 .instrumentation(new Instrumentation())
 //                .instrumentation(new ChainedInstrumentation(Arrays.asList(
 //                        new MaxQueryComplexityInstrumentation(200),
@@ -112,7 +100,7 @@ public class Controller {
         endTime = System.nanoTime();
         printTime("build graphql object");
 
-        List<String> queries = Arrays.asList(1,2,3,4,5).stream()
+        List<String> queries = Stream.of(1,2,3,4,5)
                 .map(i -> getQuery("query" + i + ".txt")).collect(Collectors.toList());
 
         queries.forEach(query -> {

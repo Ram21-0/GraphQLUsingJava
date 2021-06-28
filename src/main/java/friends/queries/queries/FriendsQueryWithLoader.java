@@ -31,11 +31,12 @@ public class FriendsQueryWithLoader {
     }
 
     public static FriendsQueryWithLoader getInstance() {
-        if(friendsQuery == null) friendsQuery = new FriendsQueryWithLoader();
+        if(friendsQuery == null) {
+            friendsQuery = new FriendsQueryWithLoader();
+        }
         return friendsQuery;
     }
 
-//
 //    @GraphQLQuery(name = "friends")
 //    public List<User> getFriends(@GraphQLContext User user) {
 //        return user.getFriends().stream().map(id -> repository.get(id)).collect(Collectors.toList());
@@ -45,12 +46,6 @@ public class FriendsQueryWithLoader {
     public CompletableFuture<List<User>> getFriends(@GraphQLContext User user, @GraphQLEnvironment ResolutionEnvironment env) {
         DataLoader<Integer,User> loader = env.dataFetchingEnvironment.getDataLoader(DataLoaderConfig.USER_FETCHER);
         CompletableFuture<List<User>> result = loader.loadMany(user.connections().stream().toList());
-
-//        Statistics statistics = loader.getStatistics();
-//        System.out.println("*******8*888888888***************");
-//        System.out.println("batch load count: " + statistics.getBatchLoadCount() +
-//                "\n cache hit count: " + statistics.getCacheHitCount() +
-//                "\n cache hit ratio: " + statistics.getCacheHitRatio());
         return result;
     }
 }
