@@ -79,7 +79,7 @@ public class ControllerWithoutDataLoaders {
         graphQL = GraphQL.newGraphQL(schema).build();
 //        graphQL = GraphQL.newGraphQL(schema)
 //                .queryExecutionStrategy(new AsyncExecutionStrategy())
-//                .instrumentation(new Instrumentation())
+//                .instrumentation(new MyInstrumentation())
 //                .instrumentation(new ChainedInstrumentation(Arrays.asList(
 //                        new MaxQueryComplexityInstrumentation(200),
 //                        new MaxQueryDepthInstrumentation(20)

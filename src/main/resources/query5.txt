@@ -2,5 +2,10 @@ query get {
     getUserById(id:2) {
         id
         name
+        items {
+            id
+            name
+            price
+        }
     }
 }

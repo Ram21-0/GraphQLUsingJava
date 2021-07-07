@@ -5,6 +5,7 @@ import graphql.ExecutionResult;
 import graphql.execution.instrumentation.ExecutionStrategyInstrumentationContext;
 import graphql.execution.instrumentation.InstrumentationContext;
 import graphql.execution.instrumentation.SimpleInstrumentation;
+//import graphql.execution.instrumentation.nextgen.S;
 import graphql.execution.instrumentation.SimpleInstrumentationContext;
 import graphql.execution.instrumentation.parameters.*;
 import graphql.language.Document;
@@ -24,26 +25,26 @@ public class Instrumentation extends SimpleInstrumentation {
 
 //    private final Clock clock;
 
-//    @Override
-//    public InstrumentationContext<ExecutionResult> beginExecution(InstrumentationExecutionParameters parameters) {
-//        var start = System.nanoTime();
-//
-//        MDC.put(CORRELATION_ID, parameters.getExecutionInput().getExecutionId().toString());
-//
-////        log.info("Query: {} with variables: {}", parameters.getQuery(), parameters.getVariables());
-//
-//        return SimpleInstrumentationContext.whenCompleted((executionResult, throwable) -> {
-//            var duration = System.nanoTime() - start;
-//            if (throwable == null) {
-//                log.info("{} Completed successfully in: {} ns  {} ms", parameters.getOperation(), duration, duration/1e6);
+    @Override
+    public InstrumentationContext<ExecutionResult> beginExecution(InstrumentationExecutionParameters parameters) {
+        var start = System.nanoTime();
+
+        MDC.put(CORRELATION_ID, parameters.getExecutionInput().getExecutionId().toString());
+
+//        log.info("Query: {} with variables: {}", parameters.getQuery(), parameters.getVariables());
+
+        return SimpleInstrumentationContext.whenCompleted((executionResult, throwable) -> {
+            var duration = System.nanoTime() - start;
+            if (throwable == null) {
+                log.info("{} Completed successfully in: {} ns  {} ms", parameters.getOperation(), duration, duration/1e6);
 //                log.info("{} calls for {}", DataRepository.getCalls(), parameters.getOperation());
 //                DataRepository.resetCalls();
-//            } else {
-//                log.warn("Failed in: {}", duration, throwable);
-//            }
+            } else {
+                log.warn("Failed in: {}", duration, throwable);
+            }
 //            MDC.clear();
-//        });
-//    }
+        });
+    }
 //
 //    @Override
 //    public InstrumentationContext<Document> beginParse(InstrumentationExecutionParameters parameters) {

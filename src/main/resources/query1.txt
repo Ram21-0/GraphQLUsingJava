@@ -4,5 +4,9 @@ mutation newUser {
     friends {
       name
     }
+    items {
+        id
+        price
+    }
   }
 }

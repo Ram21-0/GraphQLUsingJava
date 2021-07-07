@@ -8,6 +8,7 @@ import org.springframework.context.annotation.ComponentScan;
 @ComponentScan(basePackages = "friends.queries")
 public class Main {
     public static void main(String[] args) {
+        GraphQLGenerator.init();
         SpringApplication.run(Main.class, args);
     }
 }

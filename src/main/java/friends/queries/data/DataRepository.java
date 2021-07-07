@@ -5,7 +5,6 @@ import friends.queries.model.User;
 
 import java.util.*;
 import java.util.stream.Collectors;
-import java.util.stream.IntStream;
 
 public class DataRepository {
 
@@ -16,17 +15,17 @@ public class DataRepository {
 
     private static final Random random = new Random();
 
-    private static final int MAX_VALUE = 100;
+    private static final int NO_OF_USERS = 1000;       // 300
+    private static final int NO_OF_ITEMS = 100;        // 1000
+    private static final int ITEMS_PER_USER = 30;      // 100
+    public static final int FRIENDS_PER_USER = 400;    // 100
+
     private static int calls = 0;
 
     private DataRepository(HashMap<Integer,User> userData, HashMap<String,Item> itemData) {
         this.userData = userData;
         this.itemData = itemData;
     }
-
-//    private DataRepository() {
-//        dataRepository = new DataRepository(generateRandomData());
-//    }
 
     public static DataRepository getInstance() {
         if(dataRepository == null) dataRepository = new DataRepository(generateRandomUsers(), generateRandomItems());
@@ -35,7 +34,7 @@ public class DataRepository {
 
     private static HashMap<String,Item> generateRandomItems() {
         HashMap<String,Item> data = new HashMap<>();
-        for(int i=0;i<=MAX_VALUE*100;i++) {
+        for(int i=0;i<=NO_OF_ITEMS;i++) {
             String itemId = "item" + i;
             String itemName = "itemName" + i;
             int price = random.nextInt(3001);
@@ -47,22 +46,39 @@ public class DataRepository {
     private static HashMap<Integer, User> generateRandomUsers() {
         HashMap<Integer,User> data = new HashMap<>();
         data.put(0,new User(0,"Test User","test","testword",Set.of(1,2),List.of("item2","item3")));
-        for(int i=1;i<=MAX_VALUE;i++) {
+        for(int i = 1; i<= NO_OF_USERS; i++) {
             data.put(i,new User(i,"name" + i, "name" + i + "@gmail.com",i*i*i + "",new HashSet<>(),new ArrayList<>()));
         }
 
-        for(int i=1;i<=MAX_VALUE;i++) {
-            int maxFriends = random.nextInt(MAX_VALUE) + 1;
-//            if(i == 1) maxFriends = 5000;
-            while(maxFriends-- > 0) {
-                int friend = random.nextInt(MAX_VALUE) + 1;
-                data.get(i).addFriend(friend);
-//                data.get(i).getItems().add("item" + maxFriends);
-            }
+        for(int i = 1; i<= NO_OF_USERS; i++) {
+//            int maxFriends = FRIENDS_PER_USER;
+//            while(maxFriends-- > 0) {
+//                int friend = random.nextInt(NO_OF_USERS) + 1;
+//                data.get(i).addFriend(friend);
+//            }
 
-//            String xx = i + "items";
-            List<String> sampleItemList = IntStream.range(1,100*i).mapToObj(item -> "item" + item).collect(Collectors.toList());
+            List<Integer> a = new ArrayList<>(NO_OF_ITEMS);
+            for(int j=1;j<=NO_OF_ITEMS;j++) {
+                a.add(j);
+            }
+            Collections.shuffle(a);
+
+            List<String> sampleItemList = new ArrayList<>();
+            for(int id : a.subList(0,ITEMS_PER_USER)) {
+                sampleItemList.add("item" + id);
+            }
             data.get(i).itemList().addAll(sampleItemList);
+
+
+            List<Integer> b = new ArrayList<>(NO_OF_USERS);
+            for(int id=0;id<=NO_OF_USERS;id++) {
+                b.add(id);
+            }
+            Collections.shuffle(b);
+
+            for(int id : b.subList(0,FRIENDS_PER_USER)) {
+                data.get(i).addFriend(id);
+            }
         }
 
         return data;
@@ -77,7 +93,7 @@ public class DataRepository {
 
 
     public static int size() {
-        return MAX_VALUE;
+        return NO_OF_USERS;
     }
 
     public void delay() {
@@ -88,7 +104,7 @@ public class DataRepository {
 //        catch (Exception e) {
 //            e.printStackTrace();
 //        }
-        calls++;
+//        calls++;
     }
 
     public static int getCalls() {

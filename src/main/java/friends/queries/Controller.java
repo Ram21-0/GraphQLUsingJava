@@ -61,7 +61,7 @@ public class Controller {
                 .generate();
         graphQL = GraphQL.newGraphQL(schema)
                 .queryExecutionStrategy(new ExecutionStrategy())
-//                .instrumentation(new Instrumentation())
+//                .instrumentation(new MyInstrumentation())
                 .build();
 
         registry = new DataLoaderRegistry();
@@ -112,8 +112,8 @@ public class Controller {
             endTime = System.nanoTime();
             printTime("get input");
             startTime = System.nanoTime();
-//            ExecutionResult result = graphQL.execute(input);
-            CompletableFuture<ExecutionResult> asyncResult = graphQL.executeAsync(input);
+            ExecutionResult result = graphQL.execute(input);
+//            CompletableFuture<ExecutionResult> asyncResult = graphQL.executeAsync(input);
             endTime = System.nanoTime();
             printTime("query");
 

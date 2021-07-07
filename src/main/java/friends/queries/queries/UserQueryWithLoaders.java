@@ -55,18 +55,39 @@ public class UserQueryWithLoaders {
 
 //  USING DATA LOADERS : IMPLEMENTATION 2
 
+//    @GraphQLQuery(name = "users")
+//    public CompletableFuture<List<User>> getAll(@GraphQLEnvironment ResolutionEnvironment env) {
+//        DataLoader<Integer,User> loader = env.dataFetchingEnvironment.getDataLoader(DataLoaderConfig.USER_FETCHER);
+////        Statistics statistics = loader.getStatistics();
+////        System.out.println("*******8*888888888***************");
+////        System.out.println("batch load count: " + statistics.getBatchLoadCount() +
+////                "\n cache hit count: " + statistics.getCacheHitCount() +
+////                "\n cache hit ratio: " + statistics.getCacheHitRatio());
+//
+//
+////        loader.
+//        return loader.loadMany(repository.getAllUserIds());
+//    }
+
     @GraphQLQuery(name = "users")
-    public CompletableFuture<List<User>> getAll(@GraphQLEnvironment ResolutionEnvironment env) {
+    public CompletableFuture<List<User>> getAll(@GraphQLArgument(name = "first", defaultValue = "-1") int first,
+                                                @GraphQLArgument(name = "offset",defaultValue = "-1") int offset,
+                                                @GraphQLEnvironment ResolutionEnvironment env) {
+
         DataLoader<Integer,User> loader = env.dataFetchingEnvironment.getDataLoader(DataLoaderConfig.USER_FETCHER);
-//        Statistics statistics = loader.getStatistics();
-//        System.out.println("*******8*888888888***************");
-//        System.out.println("batch load count: " + statistics.getBatchLoadCount() +
-//                "\n cache hit count: " + statistics.getCacheHitCount() +
-//                "\n cache hit ratio: " + statistics.getCacheHitRatio());
 
+        var list = repository.getAllUserIds();
+        int size = list.size();
 
-//        loader.
-        return loader.loadMany(repository.getAllUserIds());
+        offset = Math.max(offset, 0);
+        offset = Math.min(offset, size);
+
+        if(first < 0) first = size;
+        int end = Math.min(size, first + offset);
+
+        return loader.loadMany(list.subList(offset, end));
+//        DataLoader<Integer,User> loader = env.dataFetchingEnvironment.getDataLoader(DataLoaderConfig.USER_FETCHER);
+//        return loader.loadMany(repository.getAllUserIds());
     }
 
     @GraphQLQuery(name = "getUserById")

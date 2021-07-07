@@ -107,10 +107,11 @@ public class User {
                 ", username='" + username + '\'' +
                 ", password='" + password + '\'' +
                 ", friends=" + friends +
+                ", items=" + items +
                 '}';
     }
 
-//    @GraphQLQuery(name = "items")
+    //    @GraphQLQuery(name = "items")
     public List<String> itemList() {
         return items;
     }

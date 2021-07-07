@@ -1,10 +1,13 @@
 query friendsOfFriendsOfFriendsOfFriends {
   users {
-    friends {
-            friends {
-              id
-              name
-            }
+    id
+    name
+    username
+    password
+    items {
+        id
+        name
+        price
     }
   }
 }

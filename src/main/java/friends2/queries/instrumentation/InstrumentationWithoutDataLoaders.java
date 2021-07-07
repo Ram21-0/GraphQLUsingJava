@@ -23,7 +23,7 @@ public class InstrumentationWithoutDataLoaders extends SimpleInstrumentation {
 //    private final Clock clock;
 
 //    @Autowired
-//    public Instrumentation(Clock clock) {
+//    public MyInstrumentation(Clock clock) {
 //        this.clock = clock;
 //    }
 
