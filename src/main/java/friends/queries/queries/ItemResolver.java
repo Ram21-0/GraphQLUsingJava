@@ -10,27 +10,25 @@ import io.leangen.graphql.spqr.spring.annotations.GraphQLApi;
 import org.dataloader.DataLoader;
 import org.springframework.stereotype.Service;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 
 @Service
 @GraphQLApi
-public class ItemQueryWithLoaders {
+public class ItemResolver {
 
     DataRepository repository;
-    private static ItemQueryWithLoaders itemQueryWithLoaders;
+    private static ItemResolver itemResolver;
 
-    private ItemQueryWithLoaders() {
+    private ItemResolver() {
         repository = DataRepository.getInstance();
     }
 
-    public static ItemQueryWithLoaders getInstance() {
-        if (itemQueryWithLoaders == null) {
-            itemQueryWithLoaders = new ItemQueryWithLoaders();
+    public static ItemResolver getInstance() {
+        if (itemResolver == null) {
+            itemResolver = new ItemResolver();
         }
-        return itemQueryWithLoaders;
+        return itemResolver;
     }
 
     @GraphQLQuery(name = "items")

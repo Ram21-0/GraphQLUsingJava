@@ -2,28 +2,22 @@ package friends.queries;
 
 import com.github.benmanes.caffeine.cache.Cache;
 import com.github.benmanes.caffeine.cache.Caffeine;
-import friends.queries.data.DataRepository;
 import friends.queries.dataloader.DataLoaderConfig;
 import friends.queries.execution.ExecutionStrategy;
 import friends.queries.instrumentation.Instrumentation;
-import friends.queries.queries.FriendsQueryWithLoader;
-import friends.queries.queries.ItemQueryWithLoaders;
-import friends.queries.queries.UserQueryWithLoaders;
+import friends.queries.queries.FriendsResolver;
+import friends.queries.queries.ItemResolver;
+import friends.queries.queries.UserResolver;
 import graphql.ExecutionInput;
 import graphql.ExecutionResult;
 import graphql.GraphQL;
-import graphql.execution.batched.BatchedExecutionStrategy;
 import graphql.execution.preparsed.PreparsedDocumentEntry;
 import graphql.execution.preparsed.PreparsedDocumentProvider;
 import graphql.schema.GraphQLSchema;
 import io.leangen.graphql.GraphQLSchemaGenerator;
 import org.dataloader.DataLoaderRegistry;
-import org.dataloader.impl.DefaultCacheMap;
-import org.springframework.boot.autoconfigure.cache.CacheProperties;
-import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-import java.util.HashMap;
 import java.util.Map;
 
 @Configuration
@@ -41,9 +35,9 @@ public class GraphQLGenerator {
         GraphQLSchema schema = new GraphQLSchemaGenerator()
                 .withBasePackages("friends.queries")
                 .withOperationsFromSingletons(
-                        UserQueryWithLoaders.getInstance(),
-                        FriendsQueryWithLoader.getInstance(),
-                        ItemQueryWithLoaders.getInstance()
+                        UserResolver.getInstance(),
+                        FriendsResolver.getInstance(),
+                        ItemResolver.getInstance()
                  )
                 .generate();
 

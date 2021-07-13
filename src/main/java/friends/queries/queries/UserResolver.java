@@ -3,7 +3,6 @@ package friends.queries.queries;
 import friends.queries.data.DataRepository;
 import friends.queries.dataloader.DataLoaderConfig;
 import friends.queries.model.User;
-import graphql.execution.batched.Batched;
 import io.leangen.graphql.annotations.GraphQLArgument;
 import io.leangen.graphql.annotations.GraphQLEnvironment;
 import io.leangen.graphql.annotations.GraphQLMutation;
@@ -19,18 +18,18 @@ import java.util.concurrent.CompletableFuture;
 
 @Service
 @GraphQLApi
-public class UserQueryWithLoaders {
+public class UserResolver {
 
     DataRepository repository;
-    static UserQueryWithLoaders userQuery;
+    static UserResolver userResolver;
 
-    private UserQueryWithLoaders() {
+    private UserResolver() {
         repository = DataRepository.getInstance();
     }
 
-    public static UserQueryWithLoaders getInstance() {
-        if(userQuery == null) userQuery = new UserQueryWithLoaders();
-        return userQuery;
+    public static UserResolver getInstance() {
+        if(userResolver == null) userResolver = new UserResolver();
+        return userResolver;
     }
 
     @GraphQLQuery(name = "users")

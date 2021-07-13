@@ -10,33 +10,30 @@ import io.leangen.graphql.annotations.GraphQLQuery;
 import io.leangen.graphql.execution.ResolutionEnvironment;
 import io.leangen.graphql.spqr.spring.annotations.GraphQLApi;
 import org.dataloader.DataLoader;
-import org.dataloader.stats.Statistics;
-import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 //@Component
 @GraphQLApi
 @Service
-public class FriendsQueryWithLoader {
+public class FriendsResolver {
 //    DataRepository repository = DataRepository.getInstance();
 
     DataRepository repository;
-    private static FriendsQueryWithLoader friendsQuery;
+    private static FriendsResolver friendsResolver;
 
-    private FriendsQueryWithLoader() {
+    private FriendsResolver() {
         repository = DataRepository.getInstance();
     }
 
-    public static FriendsQueryWithLoader getInstance() {
-        if(friendsQuery == null) {
-            friendsQuery = new FriendsQueryWithLoader();
+    public static FriendsResolver getInstance() {
+        if(friendsResolver == null) {
+            friendsResolver = new FriendsResolver();
         }
-        return friendsQuery;
+        return friendsResolver;
     }
 
 
