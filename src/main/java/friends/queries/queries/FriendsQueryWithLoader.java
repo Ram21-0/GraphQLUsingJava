@@ -39,10 +39,6 @@ public class FriendsQueryWithLoader {
         return friendsQuery;
     }
 
-//    @GraphQLQuery(name = "friends")
-//    public List<User> getFriends(@GraphQLContext User user) {
-//        return user.getFriends().stream().map(id -> repository.get(id)).collect(Collectors.toList());
-//    }
 
     @GraphQLQuery(name = "friends")
     public CompletableFuture<List<User>> getFriends(@GraphQLContext User user,

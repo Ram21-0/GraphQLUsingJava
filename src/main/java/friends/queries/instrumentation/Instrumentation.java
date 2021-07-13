@@ -23,7 +23,7 @@ import java.util.List;
 public class Instrumentation extends SimpleInstrumentation {
     public static final String CORRELATION_ID = "correlation_id";
 
-//    private final Clock clock;
+    static int count = 0;
 
     @Override
     public InstrumentationContext<ExecutionResult> beginExecution(InstrumentationExecutionParameters parameters) {
@@ -31,74 +31,73 @@ public class Instrumentation extends SimpleInstrumentation {
 
         MDC.put(CORRELATION_ID, parameters.getExecutionInput().getExecutionId().toString());
 
-//        log.info("Query: {} with variables: {}", parameters.getQuery(), parameters.getVariables());
-
         return SimpleInstrumentationContext.whenCompleted((executionResult, throwable) -> {
             var duration = System.nanoTime() - start;
             if (throwable == null) {
                 log.info("{} Completed successfully in: {} ns  {} ms", parameters.getOperation(), duration, duration/1e6);
-//                log.info("{} calls for {}", DataRepository.getCalls(), parameters.getOperation());
-//                DataRepository.resetCalls();
             } else {
                 log.warn("Failed in: {}", duration, throwable);
             }
 //            MDC.clear();
         });
     }
-//
-//    @Override
-//    public InstrumentationContext<Document> beginParse(InstrumentationExecutionParameters parameters) {
+
+    @Override
+    public InstrumentationContext<Document> beginParse(InstrumentationExecutionParameters parameters) {
 //        return super.beginParse(parameters);
+
+        long start = System.nanoTime();
+        return SimpleInstrumentationContext.whenCompleted((document, throwable) -> {
+            var duration = System.nanoTime() - start;
+            if (throwable == null) {
+                log.info("{} : Parse in {} ns .. {} ms",parameters.getOperation(),duration,duration/1e6);
+            }
+            else {
+                log.warn("Failed in: {}", duration, throwable);
+            }
+        });
+    }
 //
-////        long start = System.nanoTime();
-//////        System.out.println((parameters.getInstrumentationState().toString()));
-////        return SimpleInstrumentationContext.whenCompleted((document, throwable) -> {
-////            var duration = System.nanoTime() - start;
-////            if (throwable == null) {
-////                log.info("{} : Parse in {} ns .. {} ms",parameters.getOperation(),duration,duration/1e6);
-////            }
-////            else {
-////                log.warn("Failed in: {}", duration, throwable);
-////            }
-////        });
-//    }
-//
-//    @Override
-//    public InstrumentationContext<List<ValidationError>> beginValidation(InstrumentationValidationParameters parameters) {
+    @Override
+    public InstrumentationContext<List<ValidationError>> beginValidation(InstrumentationValidationParameters parameters) {
 //        return super.beginValidation(parameters);
-//
-////        long start = System.nanoTime();
-////        return SimpleInstrumentationContext.whenCompleted((validationErrors, throwable) -> {
-////            var duration = System.nanoTime() - start;
-////            if (throwable == null) {
-////                log.info("{} : validation in {} ns {} ms", parameters.getOperation(), duration, duration/1e6);
-////            } else {
-////                log.warn("Failed in: {}", duration, throwable);
-////            }
-////        });
-//    }
+
+        long start = System.nanoTime();
+
+        return SimpleInstrumentationContext.whenCompleted((validationErrors, throwable) -> {
+            var duration = System.nanoTime() - start;
+            if (throwable == null) {
+                log.info("{} : validation in {} ns {} ms", parameters.getOperation(), duration, duration/1e6);
+            } else {
+                log.warn("Failed in: {}", duration, throwable);
+            }
+        });
+    }
+////
+////    @Override
+////    public ExecutionStrategyInstrumentationContext beginExecutionStrategy(InstrumentationExecutionStrategyParameters parameters) {
+////        return super.beginExecutionStrategy(parameters);
+//////        long start = System.nanoTime();
+//////
+////    }
 //
 //    @Override
-//    public ExecutionStrategyInstrumentationContext beginExecutionStrategy(InstrumentationExecutionStrategyParameters parameters) {
-//        return super.beginExecutionStrategy(parameters);
-////        long start = System.nanoTime();
-////
-//    }
+//    public InstrumentationContext<ExecutionResult> beginExecuteOperation(InstrumentationExecuteOperationParameters parameters) {
+////        return super.beginExecuteOperation(parameters);
+//        long start = System.nanoTime();
+//        System.out.print("beginExecutionOperation : ");
+//        System.out.println(count++);
 //
-////    @Override
-////    public InstrumentationContext<ExecutionResult> beginExecuteOperation(InstrumentationExecuteOperationParameters parameters) {
-//////        return super.beginExecuteOperation(parameters);
-////        long start = System.nanoTime();
-////        return SimpleInstrumentationContext.whenCompleted((executionResult, throwable) -> {
-////            var duration = System.nanoTime() - start;
-////            if (throwable == null) {
-////                log.info("execute operation in {} ns .. {} ms",duration,duration/1e6);
-////            }
-////            else {
-////                log.warn("Failed in: {}", duration, throwable);
-////            }
-////        });
-////    }
+//        return SimpleInstrumentationContext.whenCompleted((executionResult, throwable) -> {
+//            var duration = System.nanoTime() - start;
+//            if (throwable == null) {
+//                log.info("execute operation in {} ns .. {} ms",duration,duration/1e6);
+//            }
+//            else {
+//                log.warn("Failed in: {}", duration, throwable);
+//            }
+//        });
+//    }
 ////
 ////    @Override
 ////    public InstrumentationContext<ExecutionResult> beginField(InstrumentationFieldParameters parameters) {
@@ -131,20 +130,20 @@ public class Instrumentation extends SimpleInstrumentation {
 ////    }
 ////
 ////
-//    @Override
-//    public InstrumentationContext<ExecutionResult> beginFieldComplete(InstrumentationFieldCompleteParameters parameters) {
-////        return super.beginFieldComplete(parameters);
-//        long start = System.nanoTime();
-//        return SimpleInstrumentationContext.whenCompleted((executionResult, throwable) -> {
-//            long duration = System.nanoTime() - start;
-//            if (throwable == null) {
-//                log.info("{} beginFieldComplete in {} ns .. {} ms",parameters.getField().getName(),duration,duration/1e6);
-//            }
-//            else {
-//                log.warn("Failed in: {}", duration, throwable);
-//            }
-//        });
-//    }
+////    @Override
+////    public InstrumentationContext<ExecutionResult> beginFieldComplete(InstrumentationFieldCompleteParameters parameters) {
+//////        return super.beginFieldComplete(parameters);
+////        long start = System.nanoTime();
+////        return SimpleInstrumentationContext.whenCompleted((executionResult, throwable) -> {
+////            long duration = System.nanoTime() - start;
+////            if (throwable == null) {
+////                log.info("{} beginFieldComplete in {} ns .. {} ms",parameters.getField().getName(),duration,duration/1e6);
+////            }
+////            else {
+////                log.warn("Failed in: {}", duration, throwable);
+////            }
+////        });
+////    }
 ////
 ////
 ////    @Override

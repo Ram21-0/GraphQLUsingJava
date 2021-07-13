@@ -11,9 +11,4 @@ query get {
       }
     }
   }
-  users {
-    friends {
-      id
-    }
-  }
 }

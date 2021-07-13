@@ -4,10 +4,7 @@ import friends.queries.data.DataRepository;
 import friends.queries.dataloader.DataLoaderConfig;
 import friends.queries.model.Item;
 import friends.queries.model.User;
-import io.leangen.graphql.annotations.GraphQLArgument;
-import io.leangen.graphql.annotations.GraphQLContext;
-import io.leangen.graphql.annotations.GraphQLEnvironment;
-import io.leangen.graphql.annotations.GraphQLQuery;
+import io.leangen.graphql.annotations.*;
 import io.leangen.graphql.execution.ResolutionEnvironment;
 import io.leangen.graphql.spqr.spring.annotations.GraphQLApi;
 import org.dataloader.DataLoader;
@@ -52,17 +49,17 @@ public class ItemQueryWithLoaders {
 
         if(first < 0) first = size;
         int end = Math.min(size, first + offset);
-        return loader.loadMany(user.itemList().subList(offset,end));
+        return loader.loadMany(list.subList(offset,end));
 
 //        DataLoader<String,Item> loader = environment.dataFetchingEnvironment.getDataLoader(DataLoaderConfig.ITEM_FETCHER);
 //        return loader.loadMany(user.itemList());
     }
 
-//    public Map<Integer,CompletableFuture<List<Item>>> getManyItems(List<User> users, @GraphQLEnvironment ResolutionEnvironment env) {
-//        Map<Integer,CompletableFuture<List<Item>>> map = new HashMap<>();
-//        users.forEach(user -> {
-//            map.put(user.getId(), getItems(user,env));
-//        });
-//        return map;
-//    }
+    @GraphQLMutation(name = "createItem")
+    public Item createItem(@GraphQLArgument(name = "item") Item item,
+                           @GraphQLEnvironment ResolutionEnvironment env) {
+
+        env.dataFetchingEnvironment.getDataLoader(DataLoaderConfig.ITEM_FETCHER).clear(item.getId()).load(item.getId());
+        return repository.createItem(item);
+    }
 }

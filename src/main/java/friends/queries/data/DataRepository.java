@@ -16,7 +16,7 @@ public class DataRepository {
     private static final Random random = new Random();
 
     private static final int NO_OF_USERS = 1000;       // 300
-    private static final int NO_OF_ITEMS = 100;        // 1000
+    private static final int NO_OF_ITEMS = 1000;        // 1000
     private static final int ITEMS_PER_USER = 30;      // 100
     public static final int FRIENDS_PER_USER = 400;    // 100
 
@@ -25,6 +25,7 @@ public class DataRepository {
     private DataRepository(HashMap<Integer,User> userData, HashMap<String,Item> itemData) {
         this.userData = userData;
         this.itemData = itemData;
+        System.out.println("generated data");
     }
 
     public static DataRepository getInstance() {
@@ -173,9 +174,19 @@ public class DataRepository {
         return user;
     }
 
-    public Item addItem(Item item) {
+    public Item createItem(Item item) {
         delay();
         dataRepository.itemData.put(item.getId(), item);
         return item;
+    }
+
+    public User addFriendsOfUser(int id,Set<Integer> friends) {
+        User u = dataRepository.userData.get(id);
+        u.connections().addAll(friends);
+        return u;
+    }
+
+    public User deleteUser(int id) {
+        return dataRepository.userData.remove(id);
     }
 }

@@ -3,7 +3,7 @@ package friends.queries;
 import java.util.HashMap;
 import java.util.Map;
 
-public class Cache {
+public class MyCache {
 
 //    private static final Map<String,Object> cache = new HashMap<>();
 //

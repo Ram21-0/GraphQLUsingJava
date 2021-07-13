@@ -13,7 +13,12 @@ public class GraphQLEndpoint {
     @ResponseBody
     public Map<String,Object> hello(@RequestBody String request) {
         System.out.println(request);
-        return Map.of("a",3);
+        String query = "query Q { users (first:10) { name id ";
+
+        query += "}";
+        query += "}";
+        return GraphQLGenerator.execute(query);
+        //return Map.of("a",3);
     }
 
     @PostMapping(value = "/endpoint")
@@ -21,11 +26,7 @@ public class GraphQLEndpoint {
         String operationName = (String) request.get("operationName");
         String query = (String) request.get("query");
         Map<String,Object> variables = (Map<String, Object>) request.get("variables");
-//        System.out.println(request.keySet());
-//        System.out.println(variables);
+
         return GraphQLGenerator.execute(operationName, query, variables);
-//                return Map.of("Hello","world");
-//        System.out.println("query");
-//        return Map.of("hello","world");
     }
 }

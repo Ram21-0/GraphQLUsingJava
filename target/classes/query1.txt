@@ -1,12 +1,15 @@
-mutation newUser {
-  createUser(id: 0, name: "name0", username: "name0@gmail.com", password: "fdhdhkd", friends: [1, 3]) {
+query Query1 {
+  users {
+    id
     name
+    password
+    username
+    items {
+      name
+      price
+    }
     friends {
       name
-    }
-    items {
-        id
-        price
     }
   }
 }
