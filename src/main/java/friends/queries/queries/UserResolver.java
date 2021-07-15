@@ -49,16 +49,36 @@ public class UserResolver {
         int end = Math.min(size, first + offset);
 
         return loader.loadMany(list.subList(offset, end));
-//        DataLoader<Integer,User> loader = env.dataFetchingEnvironment.getDataLoader(DataLoaderConfig.USER_FETCHER);
+
 //        return loader.loadMany(repository.getAllUserIds());
     }
+
+//    // without data loaders
+//    public List<User> getAll(@GraphQLArgument(name = "first", defaultValue = "-1") int first,
+//                             @GraphQLArgument(name = "offset",defaultValue = "-1") int offset,
+//                             @GraphQLEnvironment ResolutionEnvironment env) {
+//
+//        var list = repository.getAllUserIds();
+//        int size = list.size();
+//
+//        offset = Math.max(offset, 0);
+//        offset = Math.min(offset, size);
+//
+//        if(first < 0) first = size;
+//        int end = Math.min(size, first + offset);
+//        return repository.getAllUsers().subList(offset,end);
+//    }
 
     @GraphQLQuery(name = "getUserById")
     public CompletableFuture<User> getUser(@GraphQLArgument(name = "id") int id, @GraphQLEnvironment ResolutionEnvironment env) {
         DataLoader<Integer, User> loader = env.dataFetchingEnvironment.getDataLoader(DataLoaderConfig.USER_FETCHER);
-        CompletableFuture<User> result = loader.load(id);
-        return result;
+        return loader.load(id);
     }
+
+//    // without data loaders
+//    public User getUserById(@GraphQLArgument(name = "id") int id, @GraphQLEnvironment ResolutionEnvironment env) {
+//        return repository.getUser(id);
+//    }
 
     @GraphQLMutation(name = "createUser")
     public User addUser(@GraphQLArgument(name = "id") int id, @GraphQLArgument(name = "name") String name,
@@ -67,7 +87,7 @@ public class UserResolver {
                         @GraphQLArgument(name = "items") List<String> items,
                         @GraphQLEnvironment ResolutionEnvironment env) {
 
-        env.dataFetchingEnvironment.getDataLoader(DataLoaderConfig.USER_FETCHER).clear(id).load(id);
+        env.dataFetchingEnvironment.getDataLoader(DataLoaderConfig.USER_FETCHER).clear(id);
         return repository.addUser(new User(id,name,username,password,friends,items));
     }
 
@@ -75,7 +95,7 @@ public class UserResolver {
     public User update(@GraphQLArgument(name = "id") int id, @GraphQLArgument(name = "u") User u,
                        @GraphQLEnvironment ResolutionEnvironment env) {
 
-        env.dataFetchingEnvironment.getDataLoader(DataLoaderConfig.USER_FETCHER).clear(id).load(id);
+        env.dataFetchingEnvironment.getDataLoader(DataLoaderConfig.USER_FETCHER).clear(id);
         return repository.updateUser(id,u);
     }
 
@@ -84,7 +104,7 @@ public class UserResolver {
                            @GraphQLArgument(name = "friends") Set<Integer> friends,
                            @GraphQLEnvironment ResolutionEnvironment env) {
 
-        env.dataFetchingEnvironment.getDataLoader(DataLoaderConfig.USER_FETCHER).clear(id).load(id);
+        env.dataFetchingEnvironment.getDataLoader(DataLoaderConfig.USER_FETCHER).clear(id);
         return repository.addFriendsOfUser(id,friends);
     }
 

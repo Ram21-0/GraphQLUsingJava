@@ -26,6 +26,16 @@ public class GraphQLGenerator {
     private static final GraphQL graphQL;
     private static final DataLoaderRegistry registry;
     private static final Cache<String, PreparsedDocumentEntry> queryCache;
+    private static final String introspectionQuery = """
+                query Introspection {
+                  __schema {
+                    types {
+                      name
+                      fields {name}
+                    }
+                  }
+                }
+            """;
 
 
     static {
@@ -57,7 +67,7 @@ public class GraphQLGenerator {
     }
 
     public static void init() {
-
+//        graphQL.execute(ExecutionInput.newExecutionInput(introspectionQuery).operationName("Introspection").build());
     }
 
     public static Map<String,Object> execute(String query) {
@@ -76,7 +86,6 @@ public class GraphQLGenerator {
 
         ExecutionResult result = graphQL.execute(input);
 //        System.out.println(queryCache.asMap());
-//        System.out.println(queryCache.stats());
         return result.toSpecification();
     }
 }

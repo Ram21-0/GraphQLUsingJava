@@ -49,15 +49,32 @@ public class ItemResolver {
         int end = Math.min(size, first + offset);
         return loader.loadMany(list.subList(offset,end));
 
-//        DataLoader<String,Item> loader = environment.dataFetchingEnvironment.getDataLoader(DataLoaderConfig.ITEM_FETCHER);
 //        return loader.loadMany(user.itemList());
     }
+
+//    // without data loaders
+//    public List<Item> getItems(@GraphQLContext User user,
+//                               @GraphQLArgument(name = "first",defaultValue = "-1") int first,
+//                               @GraphQLArgument(name = "offset",defaultValue = "0") int offset,
+//                               @GraphQLEnvironment ResolutionEnvironment env) {
+//
+//        var list = user.itemList();
+//        int size = list.size();
+//
+//        offset = Math.max(offset, 0);
+//        offset = Math.min(offset, size);
+//
+//        if(first < 0) first = size;
+//        int end = Math.min(size, first + offset);
+//        return user.itemList().subList(offset,end).stream().map(i -> repository.getItem(i)).toList();
+//    }
+
 
     @GraphQLMutation(name = "createItem")
     public Item createItem(@GraphQLArgument(name = "item") Item item,
                            @GraphQLEnvironment ResolutionEnvironment env) {
 
-        env.dataFetchingEnvironment.getDataLoader(DataLoaderConfig.ITEM_FETCHER).clear(item.getId()).load(item.getId());
+        env.dataFetchingEnvironment.getDataLoader(DataLoaderConfig.ITEM_FETCHER).clear(item.getId());
         return repository.createItem(item);
     }
 }

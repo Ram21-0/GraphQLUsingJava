@@ -14,13 +14,13 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 //@Component
 @GraphQLApi
 @Service
 public class FriendsResolver {
-//    DataRepository repository = DataRepository.getInstance();
 
     DataRepository repository;
     private static FriendsResolver friendsResolver;
@@ -51,9 +51,22 @@ public class FriendsResolver {
         }
         return loader.loadMany(friendIds.toList());
 
-
 //        DataLoader<Integer,User> loader = env.dataFetchingEnvironment.getDataLoader(DataLoaderConfig.USER_FETCHER);
 //        CompletableFuture<List<User>> result = loader.loadMany(user.connections().stream().toList());
 //        return result;
     }
+
+//    // without data loaders
+//    public List<User> getFriends(@GraphQLContext User user,
+//                                 @GraphQLArgument(name = "first",defaultValue = "-1") int first,
+//                                 @GraphQLArgument(name = "offset",defaultValue = "0") int offset,
+//                                 @GraphQLEnvironment ResolutionEnvironment env) {
+//
+//        offset = Math.max(offset, 0);
+//        Stream<Integer> friendIds = user.connections().stream().skip(offset);
+//        if(first >= 0) {
+//            friendIds = friendIds.limit(first);
+//        }
+//        return friendIds.map(id -> repository.getUser(id)).collect(Collectors.toList());
+//    }
 }

@@ -22,7 +22,6 @@ public class ExecutionStrategy extends AsyncExecutionStrategy {
 
     @Override
     protected FieldValueInfo completeValueForList(ExecutionContext executionContext, ExecutionStrategyParameters parameters, Iterable<Object> iterableValues) {
-//        System.out.println("hello");
         OptionalInt size = FpKit.toSize(iterableValues);
         ExecutionStepInfo executionStepInfo = parameters.getExecutionStepInfo();
         InstrumentationFieldCompleteParameters instrumentationParams

@@ -21,20 +21,23 @@ import java.util.List;
 @Slf4j
 @Component
 public class Instrumentation extends SimpleInstrumentation {
+
     public static final String CORRELATION_ID = "correlation_id";
 
     static int count = 0;
 
     @Override
     public InstrumentationContext<ExecutionResult> beginExecution(InstrumentationExecutionParameters parameters) {
-        var start = System.nanoTime();
 
         MDC.put(CORRELATION_ID, parameters.getExecutionInput().getExecutionId().toString());
 
+        var start = System.nanoTime();
         return SimpleInstrumentationContext.whenCompleted((executionResult, throwable) -> {
             var duration = System.nanoTime() - start;
             if (throwable == null) {
                 log.info("{} Completed successfully in: {} ns  {} ms", parameters.getOperation(), duration, duration/1e6);
+//                log.info("{} Completed with {} calls", parameters.getOperation(), DataRepository.getCalls());
+                DataRepository.resetCalls();
             } else {
                 log.warn("Failed in: {}", duration, throwable);
             }
@@ -63,7 +66,6 @@ public class Instrumentation extends SimpleInstrumentation {
 //        return super.beginValidation(parameters);
 
         long start = System.nanoTime();
-
         return SimpleInstrumentationContext.whenCompleted((validationErrors, throwable) -> {
             var duration = System.nanoTime() - start;
             if (throwable == null) {
@@ -73,14 +75,7 @@ public class Instrumentation extends SimpleInstrumentation {
             }
         });
     }
-////
-////    @Override
-////    public ExecutionStrategyInstrumentationContext beginExecutionStrategy(InstrumentationExecutionStrategyParameters parameters) {
-////        return super.beginExecutionStrategy(parameters);
-//////        long start = System.nanoTime();
-//////
-////    }
-//
+
 //    @Override
 //    public InstrumentationContext<ExecutionResult> beginExecuteOperation(InstrumentationExecuteOperationParameters parameters) {
 ////        return super.beginExecuteOperation(parameters);
@@ -143,12 +138,5 @@ public class Instrumentation extends SimpleInstrumentation {
 ////                log.warn("Failed in: {}", duration, throwable);
 ////            }
 ////        });
-////    }
-////
-////
-////    @Override
-////    public DataFetcher<?> instrumentDataFetcher(DataFetcher<?> dataFetcher, InstrumentationFieldFetchParameters parameters) {
-////
-////        return super.instrumentDataFetcher(dataFetcher, parameters);
 ////    }
 }

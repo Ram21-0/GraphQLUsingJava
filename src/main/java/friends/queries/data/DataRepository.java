@@ -3,6 +3,8 @@ package friends.queries.data;
 import friends.queries.model.Item;
 import friends.queries.model.User;
 
+import java.io.File;
+import java.io.FileNotFoundException;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -15,12 +17,14 @@ public class DataRepository {
 
     private static final Random random = new Random();
 
-    private static final int NO_OF_USERS = 1000;       // 300
-    private static final int NO_OF_ITEMS = 1000;        // 1000
-    private static final int ITEMS_PER_USER = 30;      // 100
-    public static final int FRIENDS_PER_USER = 400;    // 100
+    private static final int NO_OF_USERS = 1000;
+    private static final int NO_OF_ITEMS = 1000;
+    private static final int ITEMS_PER_USER = 30;
+    public static final int FRIENDS_PER_USER = 400;
 
     private static int calls = 0;
+
+    private static final boolean randomData = false;
 
     private DataRepository(HashMap<Integer,User> userData, HashMap<String,Item> itemData) {
         this.userData = userData;
@@ -51,12 +55,36 @@ public class DataRepository {
             data.put(i,new User(i,"name" + i, "name" + i + "@gmail.com",i*i*i + "",new HashSet<>(),new ArrayList<>()));
         }
 
+        if(!randomData) {
+
+            try {
+                Scanner friendScanner = new Scanner(new File("src/main/resources/friendsData.txt"));
+                int i = 1;
+                while (friendScanner.hasNextLine()) {
+                    String friendLine = friendScanner.nextLine();
+                    for (String id : friendLine.split(" ")) {
+                        data.get(i).addFriend(Integer.parseInt(id));
+                    }
+                    i++;
+                }
+
+                i = 1;
+                Scanner itemScanner = new Scanner(new File("src/main/resources/itemsData.txt"));
+                while (itemScanner.hasNextLine()) {
+                    String itemLine = itemScanner.nextLine();
+                    List<String> items = new ArrayList<>(Arrays.asList(itemLine.split(" ")));
+                    data.get(i).itemList().addAll(items);
+                    i++;
+                }
+                return data;
+            }
+            catch (Exception e) {
+                e.printStackTrace();
+                return data;
+            }
+        }
+
         for(int i = 1; i<= NO_OF_USERS; i++) {
-//            int maxFriends = FRIENDS_PER_USER;
-//            while(maxFriends-- > 0) {
-//                int friend = random.nextInt(NO_OF_USERS) + 1;
-//                data.get(i).addFriend(friend);
-//            }
 
             List<Integer> a = new ArrayList<>(NO_OF_ITEMS);
             for(int j=1;j<=NO_OF_ITEMS;j++) {
@@ -70,11 +98,11 @@ public class DataRepository {
             }
             data.get(i).itemList().addAll(sampleItemList);
 
-
             List<Integer> b = new ArrayList<>(NO_OF_USERS);
             for(int id=0;id<=NO_OF_USERS;id++) {
                 b.add(id);
             }
+
             Collections.shuffle(b);
 
             for(int id : b.subList(0,FRIENDS_PER_USER)) {
@@ -92,7 +120,6 @@ public class DataRepository {
 //        put(4,new User(4,"Tom","tom@gmail.com","12345", new HashSet<>(Arrays.asList(3))));
 //    }} ;
 
-
     public static int size() {
         return NO_OF_USERS;
     }
@@ -105,7 +132,7 @@ public class DataRepository {
 //        catch (Exception e) {
 //            e.printStackTrace();
 //        }
-//        calls++;
+        calls++;
     }
 
     public static int getCalls() {
@@ -146,12 +173,14 @@ public class DataRepository {
 
     public List<User> getManyUsers(List<Integer> ids) {
         delay();
-        return ids.parallelStream().map(this::getUser).collect(Collectors.toList());
+//        return ids.parallelStream().map(this::getUser).collect(Collectors.toList());
+        return ids.stream().map(dataRepository.userData::get).collect(Collectors.toList()); // depends on data store
     }
 
     public List<Item> getManyItems(List<String> ids) {
         delay();
-        return ids.parallelStream().map(this::getItem).collect(Collectors.toList());
+//        return ids.stream().map(this::getItem).collect(Collectors.toList());
+        return ids.stream().map(dataRepository.itemData::get).collect(Collectors.toList()); // depends on data store
     }
 
     public User updateUser(int id, User user) {
@@ -181,12 +210,14 @@ public class DataRepository {
     }
 
     public User addFriendsOfUser(int id,Set<Integer> friends) {
+        delay();
         User u = dataRepository.userData.get(id);
         u.connections().addAll(friends);
         return u;
     }
 
     public User deleteUser(int id) {
+        delay();
         return dataRepository.userData.remove(id);
     }
 }
